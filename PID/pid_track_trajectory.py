@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from bezier_path import calc_4points_bezier_path
 
 
-v_max = -1
-v_min = 1 #m/s
+v_max = -2.0
+v_min = 2.0 #m/s
 omega_min = -3.14
 omega_max = 3.14 # rad/s
 
@@ -13,11 +14,11 @@ start_y = 0.0
 start_yaw = 0.0
 
 end_x = 5.0
-end_y = 0.0
-end_yaw = 0.0
+end_y = 4.0
+end_yaw = 1.57
 
-offset = 2.0
-
+offset = 3.0
+index = 0
 
 sim_time = 100
 sampling_time = 0.01
@@ -37,17 +38,27 @@ def plot_arrow(x, y, yaw, length=0.05, width=0.3, fc="b", ec="k"):
 
 class DifferentialDrive:
 
+    def __init__(self):
+
+        self.r = 0.05
+        self.L = 0.25
+
     def forward_kinematic(self, v, omega, yaw):
+
         vx = v*np.cos(yaw)
         vy = v*np.sin(yaw)
         vyaw = omega
 
         return vx, vy, vyaw
 
-    def inverse_kinematic(self, vx, vy, vth):
+    def inverse_kinematic(self, vx, vy, vyaw):
 
-        v = np.sqrt(vx**2+vy**2)
-        omega = vth
+        if vx <0 or vy <0:
+            v = -np.sqrt(vx**2+vy**2)
+        else:
+            v = np.sqrt(vx**2+vy**2)
+
+        omega = vyaw
 
         return v, omega
 
@@ -80,12 +91,21 @@ class PIDController:
         # Calculate derivative error
         derivative = self.kd * (errors[-1] - errors[-2])/self.dt
 
-
         output = proportional + integral + derivative
 
         return output
 
 
+# Calculate reference path
+
+path, _ = calc_4points_bezier_path(
+    start_x, start_y, start_yaw,
+    end_x, end_y, end_yaw,
+    offset
+)
+ax = path[:, 0]
+ay = path[:, 1]
+ayaw = np.append(np.arctan2(np.diff(ay), np.diff(ax)), end_yaw)
 
 # Choosing Kp, Ki, Kd for x
 
@@ -95,15 +115,15 @@ kd_x = 0
 
 # Choosing Kp, Ki, Kd for y
 
-kp_y = 10
+kp_y = 15
 ki_y = 10
-kd_y = 10
+kd_y = 0
 
 # Choosing Kp, Ki, Kd for yaw
 
-ki_yaw = 1
-kp_yaw = 2
-kd_yaw = 4
+ki_yaw = 10
+kp_yaw = 5
+kd_yaw = 1
 
 # Initialze position
 x0 = start_x
@@ -122,12 +142,25 @@ pid_controller_x = PIDController(kp_x, ki_x, kd_x, sampling_time)
 pid_controller_y = PIDController(kp_y, ki_y, kd_y, sampling_time)
 pid_controller_yaw = PIDController(kp_yaw, ki_yaw, kd_yaw, sampling_time)
 
-ref_path = np.array([end_x, end_y, end_yaw], dtype=np.float32)
+path, _ = calc_4points_bezier_path(
+    start_x, start_y, start_yaw,
+    end_x, end_y, end_yaw,
+    offset
+)
 
-error_x = [ref_path[0]-current_x]
-error_y = [ref_path[1]-current_y]
-error_yaw = [ref_path[2]-current_yaw]
+ref_path = np.vstack([path[:, 0], path[:, 1], np.append(np.arctan2(np.diff(path[:, 1]), np.diff(path[:, 0])), end_yaw)])
 
+
+error_x = [ref_path[0, 0]-current_x]
+error_y = [ref_path[1, 0]-current_y]
+error_yaw = [ref_path[2, 0]-current_yaw]
+
+
+# Save history
+
+hist_x = [current_x]
+hist_y = [current_y]
+hist_yaw = [current_yaw]
 
 # Calculate limit
 
@@ -139,9 +172,12 @@ plt.figure(figsize=(12, 7))
 if __name__ == "__main__":
     for t in range(sim_time):
 
-        error_x.append(ref_path[0]-current_x)
-        error_y.append(ref_path[1]-current_y)
-        error_yaw.append(ref_path[2]-current_yaw)
+        if index >= ref_path.shape[1]:
+            index = ref_path.shape[1]-1
+
+        error_x.append(ref_path[0, index]-current_x)
+        error_y.append(ref_path[1, index]-current_y)
+        error_yaw.append(ref_path[2, index]-current_yaw)
 
         ## Apply PID
 
@@ -151,7 +187,6 @@ if __name__ == "__main__":
 
         # if output_vx > vx_max:
         #     output_vx = vx_max
-
         # elif output_vx < vx_min:
         #     output_vx = vx_min
 
@@ -167,10 +202,6 @@ if __name__ == "__main__":
 
         v_pid, omega_pid = diff_drive.inverse_kinematic(output_vx, output_vy, output_omega)
 
-        # if v_pid >= v_max:
-        #     v_pid = v_max
-        # elif v_pid < v_min:
-        #     v_pid = v_min
 
 
         ## Discretize for getting new states
@@ -181,7 +212,12 @@ if __name__ == "__main__":
         current_y = y_next
         current_yaw = yaw_next
 
-        print(current_x)
+        hist_x.append(current_x)
+        hist_y.append(current_y)
+        hist_yaw.append(current_yaw)
+
+
+        print(omega_pid)
 
         plt.clf()
         plt.gcf().canvas.mpl_connect('key_release_event',
@@ -189,8 +225,9 @@ if __name__ == "__main__":
         plot_arrow(current_x, current_y, current_yaw)
         plt.plot(5, 5)
         plt.plot(ref_path[0], ref_path[1], marker="x", color="blue", label="Input Trajectory")
-        plt.title("Velocity of robot [m/sec]:" + str(round(v_pid, 2)))
+        plt.plot(hist_x, hist_y, color="red", label="PID Track")
         plt.axis("equal")
         plt.grid(True)
         plt.legend()
         plt.pause(0.0001)
+        index += 1
