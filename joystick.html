@@ -8,363 +8,324 @@
         *
         {
             box-sizing: border-box;
-            --size-width:8vw;
-            --size-height:4vw;
+            margin:0;
+            padding: 0;
             --font-size:1.2vw;
-            --h1-font-size:2vw;
+            --padding-btn:.8vw 2.5vw;
+            --border-raduis-btn:.3vw;
+            --row-child-width:90%;
+            --each-row-gap:6vw;
+            --row5-gap:4vw;
+            --font-size:1.8vw ;
         }
-        .WebContainer{
-            width:100%;
-            min-width:1000px;
-            height: auto;
+        body{
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5rem;
+            overflow-x: hidden;
+            background-color: #f1f1f1;
         }
-        p{
+        #container{
+            width: 80%;
+            min-height: 100vh;
+            background: transparent;
+            padding: 4rem 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: var(--each-row-gap);
+        }
+        button{
             font-size: var(--font-size);
+            padding: var(--padding-btn);
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background-color: #000000;
+            color: white;
+            border-radius: var(--border-raduis-btn);
+            transition: 500ms;
+            
+        }
+        button:hover{
+            background: white;
+            color: black;
+        }
+        
+        .row1,.row2,.row3,.row4,.row5{
+            width: var(--row-child-width);
+            display: flex;
+        }
+        .row1{
+            justify-content: space-between;
+            font-size: 1.6vw;
+        }
+        /* .row1 >div{
+            width: 100%;
+        } */
+        .row2{
+            
+            justify-content: space-between;
+        }
+        .row3{
+            justify-content: space-between;
+        }
+        .row4{
+            justify-content: space-evenly;
+        }
+        .row5{
+            /* width: 100%; */
+            justify-content: space-between;
+        }
+        .row5>div{
+            display: flex;
+            flex-direction: column;
+            gap: var(--row5-gap);
+            justify-content: center;
         }
         h1{
-            font-size: var(--h1-font-size);
-        }
-        body
-        {
-            margin: 200px;
-            padding: 200px;
-            font-family: monospace;
-        }
-        button {
-            max-width: 50%;
-        }
-        main {
-            width: 375px;
-            max-width: 100%;
-            margin: 0px auto;
-            padding: 10px;
-        }
-        .row
-        {
-            bottom: 50%;
-            display: inline-flex;
-            clear: both;
-        }
-        .joystick1
-        {
-            position: absolute;
-            left: 10%;
-            top: 40%;
-            /* left: %; */
-            transform: translate(-50%, -50%);
-        }
-        .joystick2
-        {
-            position: absolute;
-            left: 10%;
-            top: 30%;
-            /* left: %; */
-            transform: translate(-50%, -50%);
-        }
-        #joy2Div
-        {
-            width:200px;
-            height:200px;
-            margin:50px
-        }
-        #joystick
-        {
-            border: 1px solid #FF0000;
-        }
-        #joystick2
-        {
-            border: 1px solid #0000FF;
-        }
-        .row_joy{
-            width: 50%;
-            display: flex;
-            justify-content: space-between;
-            margin-top: 25%;
-        }
-        .joy_cir{
-            width: 200px;
-            /* transform: translate(-10px); */
-            position: relative;
-            /* display: block */
-            aspect-ratio: 1/1;
-        }
-        .laser {
-            top: 15%;
-            display: inline-flex;
-            position: absolute;
-            left: 30%;
-            /* left: %; */
-            transform: translate(-50%, -50%);
-        }
-        .statusState {
-            top: 15%;
-            display: inline-flex;
-            position: absolute;
-            left: 40%;
-            /* left: %; */
-            transform: translate(-50%, -50%);
-        }
-        .state_x {
-            top: 15%;
-            display: inline-flex;
-            position: absolute;
-            left: 50%;
-            /* left: %; */
-            transform: translate(-50%, -50%);
-        }
-        .state_y {
-            top: 15%;
-            display: inline-flex;
-            position: absolute;
-            left: 60%;
-            /* left: %; */
-            transform: translate(-50%, -50%);
-        }
-        .state_yaw {
-            top: 15%;
-            display: inline-flex;
-            position: absolute;
-            left: 70%;
-            /* left: %; */
-            transform: translate(-50%, -50%);
-        }
-        h1 {
+            width: 100%;
             text-align: center;
+            font-size: 2.5vw;
         }
-        #connecting {
-            /* position: fixed;
-            top: 10%;
-            right: 50%; */
+        
+        
+        @keyframes dot-keyframes {
+            0% {
+                opacity: 0.4;
+                transform: scale(1, 1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2, 1.2);
+            }
+            100% {
+                opacity: 0.4;
+                transform: scale(1, 1);
+            }
+        }
+        .loading-dots {
             text-align: center;
+            width: 100%;
         }
-        #connected {
-            right: 50%;
-            color:#00D600;
-            display: none;
-            position: absolute;
+        .loading-dots--dot {
+            animation: dot-keyframes 1.5s infinite ease-in-out;
+            background-color: #000;
+            border-radius: 10px;
+            display: inline-block;
+            height: 5px;
+            width: 5px;
+        }
+        .loading-dots--dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        .loading-dots--dot:nth-child(3) {
+            animation-delay: 1s;
+        }
 
+        #statusIndicator{
+            width: 90%;
+            display: flex;
+            flex-direction: column;
         }
-        #error {
-            right: 30%;
-            color:#FF0000;
+        #connecting{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            font-size: var(--font-size);
+        }
+        
+        #connecting>div{
+            width: fit-content;
+        }
+        #connected{
+            width: 100%;
+            text-align: center;
+            font-weight: bolder;
+            font-size: var(--font-size) ;
+            color: rgb(0, 136, 255);
             display: none;
-            position: absolute;
         }
-        #closed {
-            right: 60%;
-            color:#FF0000;
+        .err{
+            width: 100%;
             display: none;
-            position: absolute;
-        }
-        #resetGoal{
-            width: var(--size-width);
-            height: var(--size-height);
+            justify-content: space-between;
+            color: red;
+            font-weight: bold;
             font-size: var(--font-size);
-            top: 20%;
-            bottom: 50%;
-            left: 20%;
-            right: 50%;
-            position: absolute;
         }
-        #goal1 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 20%;
-            bottom: 50%;
-            left: 30%;
-            right: 50%;
-            position: absolute;
-        }
-        #goal2 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 20%;
-            bottom: 50%;
-            left: 40%;
-            right: 50%;
-            position: absolute;
-        }
-        #goal3 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 20%;
-            bottom: 50%;
-            left: 50%;
-            right: 50%;
-            position: absolute;
-        }
-        #goal4 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 20%;
-            bottom: 50%;
-            left: 60%;
-            right: 50%;
-            position: absolute;
-        }
-        #goal5 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 20%;
-            bottom: 50%;
-            left: 70%;
-            right: 50%;
-            position: absolute;
-        }
-        #pickUP1
-        {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 30%;
-            bottom: 50%;
-            left: 30%;
-            right: 50%;
-            position: absolute;
-        }
-        #pickUP2
-        {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 30%;
-            bottom: 50%;
-            left: 60%;
-            right: 50%;
-            position: absolute;
-        }
-        #shoot {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 30%;
-            bottom: 50%;
-            left: 45%;
-            right: 50%;
-            position: absolute;
-        }
-        #manual {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 10%;
-            bottom: 50%;
-            left: 10%;
-            right: 50%;
-            position: absolute;
-        }
-        #auto {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 10%;
-            bottom: 50%;
-            left: 80%;
-            right: 50%;
-            position: absolute;
-        }
-        #pole3{
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 50%;
-            bottom: 50%;
-            left: 45%;
-            right: 50%;
-            position: absolute;
-        }
-        #pole2-1 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 40%;
-            bottom: 50%;
-            left: 30%;
-            right: 50%;
-            position: absolute;
-        }
-        #pole2-2 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 60%;
-            bottom: 50%;
-            left: 30%;
-            right: 50%;
-            position: absolute;
-        }
-        #pole2-3 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 40%;
-            bottom: 50%;
-            left: 60%;
-            right: 50%;
-            position: absolute;
-        }
-        #pole2-4 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 60%;
-            bottom: 50%;
-            left: 60%;
-            right: 50%;
-            position: absolute;
-        }
-        #pole1-1 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 35%;
-            bottom: 50%;
-            left: 15%;
-            right: 50%;
-            position: absolute;
-        }
-        #pole1-2 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 50%;
-            bottom: 50%;
-            left: 15%;
-            right: 50%;
-            position: absolute;
-        }
-        #pole1-3 {
-            width: var(--size-width);
-            height: var(--size-height);
-            font-size: var(--font-size);
-            top: 65%;
-            bottom: 50%;
-            left: 15%;
-            right: 50%;
-            position: absolute;
-        }
-        /* @media only screen and (width < 900px){
-            main {
-                font-size: 0.8em;
-                margin: 10px 10px;
-            }
-        } */
-        @media (max-width: 768px) {
-            body {
-                max-width: 100%;
-            }
-        }
-        @media (min-width: 768px) {
-            body {
-                min-width: 320px;
-            }
+        #error,#closed{
+            display: none;
         }
     </style>
+    
+</head>
+<body>
+    <div id="container">
+        
+        <div class="row1">
+            <div class="laser">
+                <p>Distance: </p> <span id="distance"></span>
+            </div>
+            <div class="statusState">
+                <p>Status: </p> <span id="status"></span>
+            </div>
+            <div class="state_x">
+                <p>State x: </p> <span id="curr_x"></span>
+            </div>
+            <div class="state_y">
+                <p>State y: </p> <span id="curr_y"></span>
+            </div>
+            <div class="state_yaw">
+                <p>State yaw: </p> <span id="curr_yaw"></span>
+            </div>
+        </div>
+        
+        
+        <div class="row2">
+            <button id="manual">
+                Manual
+            </button>
+            <button id="auto">
+                Auto
+            </button>
+        </div>
+        
+        <div class="row3">
+            <button id="resetGoal">
+                Reset Goal
+            </button>
+            <button id="goal1">
+                Goal 1
+            </button>
+            <button id="goal2">
+                Goal 2
+            </button>
+            <button id="goal3">
+                Goal 3
+            </button>
+            <button id="goal4">
+                Goal 4
+            </button>
+            <button id="goal5">
+                Goal 5
+            </button>
+        </div>
+        
+        <div class="row4">
+            <button id="pickUP1">
+                PickUP1
+            </button>
+            <button id="pickUP2">
+                PickUP2
+            </button>
+            <button id="shoot">
+                Shoot !!!
+            </button>
+        </div>
+        
+        
+        <div class="row5">
+            <div class="col1">
+                <button id="pole1-1">
+                    Pole1-1
+                </button>
+                <button id="pole1-2">
+                    Pole1-2
+                </button>
+                <button id="pole1-3">
+                    Pole1-3
+                </button>
+            </div>
+            <div class="col2">
+                <button id="pole2-1">
+                    Pole2-1
+                </button>
+                <button id="pole2-2">
+                    Pole2-2
+                </button>
+            </div>
+            <div class="col3">
+                <button id="pole3">
+                    Pole3
+                </button>
+            </div>
+            <div class="col4">
+                
+                <button id="pole2-3">
+                    Pole2-3
+                </button>
+                <button id="pole2-4">
+                    Pole2-4
+                </button>
+            </div>
+            <div class="col5">
+                <button id="pole1-4">
+                    Pole1-4
+                </button>
+                <button id="pole1-5">
+                    Pole1-5
+                </button>
+                <button id="pole1-6">
+                    Pole1-6
+                </button>
+            </div>
+        </div>
+        
+        <!-- <div class="row">
+            <div class="joystick1">
+                X :<input id="joy1X" type="text" /></br>
+                Y :<input id="joy1Y" type="text" />
+            </div>
+            <div class="joystick2">
+                X :<input id="joy2X" type="text" /></br>
+                Y :<input id="joy2Y" type="text" />
+            </div>
+        </div> -->
+        
+        <div id="statusIndicator">
+            <h1> JoyStick Controller </h1>
+            <br>
+            <div id="connecting">
+                Connecting to rosbridge&nbsp; 
+                <div class="loading-dots">
+                    <div class="loading-dots--dot"></div>
+                    <div class="loading-dots--dot"></div>
+                    <div class="loading-dots--dot"></div>
+                </div>
+            </div>
+            <p  id="connected">
+                Connected
+            </p>
+            <div class="err">
+                <p id="closed">
+                    Connection closed.
+                </p>
+                <p id="error">
+                    Error in the backend!
+                </p>
+
+            </div>
+        </div>
+        <!-- <center>
+            <div class="row_joy">
+                <div id="joy1div" class="joy_cir" ></div>
+                <div id="joy2div" class="joy_cir"></div>
+            </div>
+        </center> -->
+        
+    </div>
+    
+    
+    
+    
+    
+    
     <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
     <script src="roslib.js"></script>
     <script>
@@ -375,35 +336,37 @@
             document.getElementById('connecting').style.display = 'none';
             document.getElementById('connected').style.display = 'none';
             document.getElementById('closed').style.display = 'none';
-            document.getElementById('error').style.display = 'inline';
+            document.querySelector(".err").style.display="flex";
+            document.getElementById('error').style.display = 'block';
             console.log(error);
         });
-
+        
         // Find out exactly when we made a connection.
         ros.on('connection', function() {
             console.log('Connection made!');
             document.getElementById('connecting').style.display = 'none';
             document.getElementById('error').style.display = 'none';
             document.getElementById('closed').style.display = 'none';
-            document.getElementById('connected').style.display = 'inline';
+            document.getElementById('connected').style.display = 'block';
         });
-
+        
         ros.on('close', function() {
             console.log('Connection closed.');
             document.getElementById('connecting').style.display = 'none';
             document.getElementById('connected').style.display = 'none';
-            document.getElementById('closed').style.display = 'inline';
+            document.querySelector(".err").style.display="flex";
+            document.getElementById('closed').style.display = 'block';
         });
-
+        
         // Create a connection to the rosbridge WebSocket server.
         ros.connect('ws://192.168.0.100:9090');
-
+        
         var cmd_publisher = new ROSLIB.Topic({
             ros: ros,
             name: '/cmd_vel',
             messageType: 'geometry_msgs/Twist'
         });
-
+        
         var cmd_goal = new ROSLIB.Topic({
             ros: ros,
             name: '/cmd_goal',
@@ -415,7 +378,7 @@
             name: 'shooter_command',
             messageType: 'std_msgs/Int8'
         });
-
+        
         var laser_sub = new ROSLIB.Topic({
             ros: ros,
             name: 'laser',
@@ -427,7 +390,7 @@
             name: 'controller_state',
             messageType: 'std_msgs/String'
         });
-
+        
         var controller_sub = new ROSLIB.Topic({
             ros: ros,
             name: 'controller_state',
@@ -439,359 +402,252 @@
             name: 'imu/data2',
             messageType: 'sensor_msgs/Imu'
         });
-
+        
         var state_sub = new ROSLIB.Topic({
             ros: ros,
             name: 'odom_wheel',
             messageType: 'std_msgs/Float32MultiArray'
         });
-
+        
         var pole_publisher = new ROSLIB.Topic({
             ros: ros,
             name: 'pole_cmd',
             messageType: 'std_msgs/String'
         })
-
+        
     </script>
-</head>
-<body>
-    <button id="resetGoal">
-        Reset Goal
-    </button>
-    <button id="goal1">
-        Goal1
-    </button>
-    <button id="goal2">
-        Goal2
-    </button>
-    <button id="goal3">
-        Goal3
-    </button>
-    <button id="goal4">
-        Goal4
-    </button>
-    <button id="goal5">
-        Goal5
-    </button>
-    <button id="pickUP1">
-        PickUP1
-    </button>
-    <button id="pickUP2">
-        PickUP2
-    </button>
-    <button id="shoot">
-        Shoot !!!
-    </button>
-    <button id="manual">
-    	Manual
-    </button>
-    <button id="auto">
-    	Auto
-    </button>
-    <button id="pole1-1">
-        Pole1-1
-    </button>
-    <button id="pole1-2">
-        Pole1-2
-    </button>
-    <button id="pole1-3">
-        Pole1-3
-    </button>
-    <button id="pole2-1">
-        Pole2-1
-    </button>
-    <button id="pole2-2">
-        Pole2-2
-    </button>
-    <button id="pole2-3">
-        Pole2-3
-    </button>
-    <button id="pole2-4">
-        Pole2-4
-    </button>
-    <button id="pole3">
-        Pole3
-    </button>
-
-    <div class="laser">
-        <p>Distance: </p> <span id="distance"></span>
-    </div>
-    <div class="statusState">
-        <p>Status: </p> <span id="status"></span>
-    </div>
-    <div class="state_x">
-        <p>State x: </p> <span id="curr_x"></span>
-    </div>
-    <div class="state_y">
-        <p>State y: </p> <span id="curr_y"></span>
-    </div>
-    <div class="state_yaw">
-        <p>State yaw: </p> <span id="curr_yaw"></span>
-    </div>
-
-</div>
-    <!-- <div class="row">
-        <div class="joystick1">
-                X :<input id="joy1X" type="text" /></br>
-                Y :<input id="joy1Y" type="text" />
-            </div>
-            <div class="joystick2">
-                    X :<input id="joy2X" type="text" /></br>
-                    Y :<input id="joy2Y" type="text" />
-                </div>
-            </div> -->
-
-            <h1> JoyStick Controller </h1>
-            <div id="statusIndicator">
-                <p id="connecting">
-                    Connecting to rosbridge...
-                </p>
-                <p id="connected">
-                    Connected
-                </p>
-                <p id="error">
-                    Error in the backend!
-                </p>
-                <p id="closed">
-                    Connection closed.
-                </p>
-            </div>
-            <!-- <center>
-            <div class="row_joy">
-                <div id="joy1div" class="joy_cir" ></div>
-                <div id="joy2div" class="joy_cir"></div>
-            </div>
-            </center> -->
-            <script type="text/javascript">
-
-                // setInterval(function(){ joy2X.value=joy2.GetX(); }, 50);
-                // setInterval(function(){ joy2Y.value=joy2.GetY(); }, 50);
-
-                // var mapFunc = function(input, min_input, max_input, min_output, max_output)
-                // {
-                //     var value = ((input - min_input)*(max_output-min_output)/(max_input - min_input) + min_output);
-
-                //     return value;
-                // }
-
-                // var getValueXY = function(joyX, joyY){
-
+    
+    <script type="text/javascript">
+        
+        // setInterval(function(){ joy2X.value=joy2.GetX(); }, 50);
+        // setInterval(function(){ joy2Y.value=joy2.GetY(); }, 50);
+        
+        // var mapFunc = function(input, min_input, max_input, min_output, max_output)
+        // {
+            //     var value = ((input - min_input)*(max_output-min_output)/(max_input - min_input) + min_output);
+            
+            //     return value;
+            // }
+            
+            // var getValueXY = function(joyX, joyY){
+                
                 //     var vx = mapFunc(joyX, -100, 100, -1.0, 1.0);
                 //     var vy = mapFunc(joyY, -100, 100, -1.0, 1.0);
-
+                
                 //     return vx, vy;
                 // }
-
+                
                 // var vx = 0.0;
                 // var vy = 0.0;
                 // var vx2 = 0.0;
                 // var vy2 = 0.0;
                 // var vyaw = 0.0;
                 // var radius = 150.0;
-
+                
                 // var joy1X = document.getElementById("joy1X");
                 // var joy1Y = document.getElementById("joy1Y");
-
+                
                 // setInterval(function(){ joy1X.value=joy1.GetX(); }, 50);
                 // setInterval(function(){ joy1Y.value=joy1.GetY(); }, 50);
-
+                
                 // var joy1 = new JoyStick('joy1div', {}, function(stickData) {
-                //     joy1X.value = stickData.y;
-                //     joy1Y.value = stickData.x;
-                //     vx = mapFunc(stickData.y, -100, 100, -1.0, 1.0);
-                //     vy = mapFunc(-stickData.x, -100, 100, -1.0, 1.0);
-                // });
-                // var joy2X = document.getElementById("joy2X");
-                // var joy2Y = document.getElementById("joy2Y");
-
-                // var joy2 = new JoyStick('joy2div', {}, function(stickData) {
-                //     joy2X.value = stickData.y;
-                //     joy2Y.value = stickData.x;
-                //     vx2 = stickData.x;
-                //     vy2 = stickData.y;
-                //     vyaw = Math.sqrt(Math.pow(vx2, 2)+Math.pow(vy2, 2))/radius;
-                //     var angle = Math.atan2(vy2, vx2);
-
-                //     if (angle < 1.57) {
-                //         vyaw = -vyaw;
-                //     }
-                // });
-                // setInterval(function(){ joy2X.value=joy2.GetX(); }, 50);
-                // setInterval(function(){ joy2Y.value=joy2.GetY(); }, 50);
-
-                // var move_robot = function(vx, vy, vyaw) {
-                //     var twist = new ROSLIB.Message({
-                //         linear: {
-                //             x: vx,
-                //             y: vy,
-                //             z: 0.0,
-                //         },
-                //         angular: {
-                //             x: 0.0,
-                //             y: 0.0,
-                //             z: vyaw,
-                //         }
-                //     });
-
-                //     cmd_publisher.publish(twist);
-                // }
-
-                // // console.log(vx, vy, vyaw);
-                // setInterval(() => {
-                //     move_robot(vx, vy, vyaw);
-                // }, 400);
-
-                function reset_handler(event) {
-                    var msg = 'reset';
-                    cmd_goal.publish({data: msg});
-                };
-
-                document.getElementById("resetGoal").addEventListener("click", reset_handler);
-
-                function goal1_handler(event) {
-                    var msg = 'goal1';
-                    cmd_goal.publish({data: msg});
-                };
-                document.getElementById("goal1").addEventListener("click", goal1_handler);
-
-                function goal2_handler(event) {
-                    var msg = 'goal2';
-                    cmd_goal.publish({data: msg});
-                };
-                document.getElementById("goal2").addEventListener("click", goal2_handler);
-
-                function goal3_handler(event) {
-                    var msg = 'goal3';
-                    cmd_goal.publish({data: msg});
-                };
-                document.getElementById("goal3").addEventListener("click", goal3_handler);
-
-                function goal4_handler(event) {
-                    var msg = 'goal4';
-                    cmd_goal.publish({data: msg});
-                };
-                document.getElementById("goal4").addEventListener("click", goal4_handler);
-
-                function goal5_handler(event) {
-                    var msg = 'goal5';
-                    cmd_goal.publish({data: msg});
-                };
-                document.getElementById("goal5").addEventListener("click", goal5_handler);
-
-                function pick_up1_handler(event) {
-                    var msg = 'pick_up1';
-                    cmd_goal.publish({data: msg});
-                };
-                document.getElementById("pickUP1").addEventListener("click", pick_up1_handler);
-
-                function pick_up2_handler(event) {
-                    var msg = 'pick_up2';
-                    cmd_goal.publish({data: msg});
-                };
-                document.getElementById("pickUP2").addEventListener("click", pick_up2_handler);
-                
-                function shooter_command(event) {
-                    var msg = 1;
-                    shoot_cmd.publish({data: msg});
-                };
-                document.getElementById("shoot").addEventListener("click", shooter_command);
-
-                laser_sub.subscribe(function(message) {
-                    document.getElementById("distance").innerText = message.data;
-                });
-                
-                function manual_command(event) {
-                    var msg = 'manual';
-                    controller_pub.publish({data: msg});
-                };
-                
-                document.getElementById("manual").addEventListener("click", manual_command);
-                
-                function auto_command(event) {
-                    var msg = 'auto';
-                    controller_pub.publish({data: msg});
-                };
-                
-                document.getElementById("auto").addEventListener("click", auto_command);
-
-                controller_sub.subscribe(function(message) {
-                    document.getElementById("status").innerText = message.data;
-                });
-
-                state_sub.subscribe(function(message) {
-
-                    var x = message.data[0];
-                    x = x.toFixed(4);
-                    var y = message.data[1];
-                    y = y.toFixed(4);
-
-                    document.getElementById("curr_x").innerText = x;
-                    document.getElementById("curr_y").innerText = y;
-                });
-
-                quaternion_sub.subscribe(function(message) {
-                    var q1 = message.orientation.x;
-                    var q2 = message.orientation.y;
-                    var q3 = message.orientation.z;
-                    var q4 = message.orientation.w;
-
-                    var siny_cosp = 2 * (q4*q3+q1*q2);
-                    var cosy_cosp = 1 - 2 * (q2*q2+q3*q3);
-
-                    var yaw = Math.atan2(siny_cosp, cosy_cosp);
-
-                    document.getElementById("curr_yaw").innerText = yaw.toFixed(4);
-                });
-
-                function pole1_1(event) {
-                    var msg = 'pole1_1';
-                    pole_publisher.publish({data: msg});
-                }
-                document.getElementById("pole1-1").addEventListener("click", pole1_1);
-
-                function pole1_2(event) {
-                    var msg = 'pole1_2';
-                    pole_publisher.publish({data: msg});
-                }
-                document.getElementById("pole1-2").addEventListener("click", pole1_2);
-                
-                function pole1_3(event) {
-                    var msg = 'pole1_3';
-                    pole_publisher.publish({data: msg});
-                }
-                document.getElementById("pole1-3").addEventListener("click", pole1_3);
-
-                function pole2_1(event) {
-                    var msg = 'pole2_1';
-                    pole_publisher.publish({data: msg});
-                }
-                document.getElementById("pole2-1").addEventListener("click", pole2_1);
-
-                function pole2_2(event) {
-                    var msg = 'pole2_2';
-                    pole_publisher.publish({data: msg});
-                }
-                document.getElementById("pole2-2").addEventListener("click", pole2_2);
-
-                function pole2_3(event) {
-                    var msg = 'pole2_3';
-                    pole_publisher.publish({data: msg});
-                }
-                document.getElementById("pole2-3").addEventListener("click", pole2_3);
-
-                function pole2_4(event) {
-                    var msg = 'pole2_4';
-                    pole_publisher.publish({data: msg});
-                }
-                document.getElementById("pole2-4").addEventListener("click", pole2_4);
-
-                function pole3(event) {
-                    var msg = 'pole3';
-                    pole_publisher.publish({data: msg});
-                }
-                document.getElementById("pole3").addEventListener("click", pole3);
-                
-                </script>
-            </body>
-
-            </html>
+                    //     joy1X.value = stickData.y;
+                    //     joy1Y.value = stickData.x;
+                    //     vx = mapFunc(stickData.y, -100, 100, -1.0, 1.0);
+                    //     vy = mapFunc(-stickData.x, -100, 100, -1.0, 1.0);
+                    // });
+                    // var joy2X = document.getElementById("joy2X");
+                    // var joy2Y = document.getElementById("joy2Y");
+                    
+                    // var joy2 = new JoyStick('joy2div', {}, function(stickData) {
+                        //     joy2X.value = stickData.y;
+                        //     joy2Y.value = stickData.x;
+                        //     vx2 = stickData.x;
+                        //     vy2 = stickData.y;
+                        //     vyaw = Math.sqrt(Math.pow(vx2, 2)+Math.pow(vy2, 2))/radius;
+                        //     var angle = Math.atan2(vy2, vx2);
+                        
+                        //     if (angle < 1.57) {
+                            //         vyaw = -vyaw;
+                            //     }
+                            // });
+                            // setInterval(function(){ joy2X.value=joy2.GetX(); }, 50);
+                            // setInterval(function(){ joy2Y.value=joy2.GetY(); }, 50);
+                            
+                            // var move_robot = function(vx, vy, vyaw) {
+                                //     var twist = new ROSLIB.Message({
+                                    //         linear: {
+                                        //             x: vx,
+                                        //             y: vy,
+                                        //             z: 0.0,
+                                        //         },
+                                        //         angular: {
+                                            //             x: 0.0,
+                                            //             y: 0.0,
+                                            //             z: vyaw,
+                                            //         }
+                                            //     });
+                                            
+                                            //     cmd_publisher.publish(twist);
+                                            // }
+                                            
+                                            // // console.log(vx, vy, vyaw);
+                                            // setInterval(() => {
+                                                //     move_robot(vx, vy, vyaw);
+                                                // }, 400);
+                                                
+                                                function reset_handler(event) {
+                                                    var msg = 'reset';
+                                                    cmd_goal.publish({data: msg});
+                                                };
+                                                
+                                                document.getElementById("resetGoal").addEventListener("click", reset_handler);
+                                                
+                                                function goal1_handler(event) {
+                                                    var msg = 'goal1';
+                                                    cmd_goal.publish({data: msg});
+                                                };
+                                                document.getElementById("goal1").addEventListener("click", goal1_handler);
+                                                
+                                                function goal2_handler(event) {
+                                                    var msg = 'goal2';
+                                                    cmd_goal.publish({data: msg});
+                                                };
+                                                document.getElementById("goal2").addEventListener("click", goal2_handler);
+                                                
+                                                function goal3_handler(event) {
+                                                    var msg = 'goal3';
+                                                    cmd_goal.publish({data: msg});
+                                                };
+                                                document.getElementById("goal3").addEventListener("click", goal3_handler);
+                                                
+                                                function goal4_handler(event) {
+                                                    var msg = 'goal4';
+                                                    cmd_goal.publish({data: msg});
+                                                };
+                                                document.getElementById("goal4").addEventListener("click", goal4_handler);
+                                                
+                                                function goal5_handler(event) {
+                                                    var msg = 'goal5';
+                                                    cmd_goal.publish({data: msg});
+                                                };
+                                                document.getElementById("goal5").addEventListener("click", goal5_handler);
+                                                
+                                                function pick_up1_handler(event) {
+                                                    var msg = 'pick_up1';
+                                                    cmd_goal.publish({data: msg});
+                                                };
+                                                document.getElementById("pickUP1").addEventListener("click", pick_up1_handler);
+                                                
+                                                function pick_up2_handler(event) {
+                                                    var msg = 'pick_up2';
+                                                    cmd_goal.publish({data: msg});
+                                                };
+                                                document.getElementById("pickUP2").addEventListener("click", pick_up2_handler);
+                                                
+                                                function shooter_command(event) {
+                                                    var msg = 1;
+                                                    shoot_cmd.publish({data: msg});
+                                                };
+                                                document.getElementById("shoot").addEventListener("click", shooter_command);
+                                                
+                                                laser_sub.subscribe(function(message) {
+                                                    document.getElementById("distance").innerText = message.data;
+                                                });
+                                                
+                                                function manual_command(event) {
+                                                    var msg = 'manual';
+                                                    controller_pub.publish({data: msg});
+                                                };
+                                                
+                                                document.getElementById("manual").addEventListener("click", manual_command);
+                                                
+                                                function auto_command(event) {
+                                                    var msg = 'auto';
+                                                    controller_pub.publish({data: msg});
+                                                };
+                                                
+                                                document.getElementById("auto").addEventListener("click", auto_command);
+                                                
+                                                controller_sub.subscribe(function(message) {
+                                                    document.getElementById("status").innerText = message.data;
+                                                });
+                                                
+                                                state_sub.subscribe(function(message) {
+                                                    
+                                                    var x = message.data[0];
+                                                    x = x.toFixed(4);
+                                                    var y = message.data[1];
+                                                    y = y.toFixed(4);
+                                                    
+                                                    document.getElementById("curr_x").innerText = x;
+                                                    document.getElementById("curr_y").innerText = y;
+                                                });
+                                                
+                                                quaternion_sub.subscribe(function(message) {
+                                                    var q1 = message.orientation.x;
+                                                    var q2 = message.orientation.y;
+                                                    var q3 = message.orientation.z;
+                                                    var q4 = message.orientation.w;
+                                                    
+                                                    var siny_cosp = 2 * (q4*q3+q1*q2);
+                                                    var cosy_cosp = 1 - 2 * (q2*q2+q3*q3);
+                                                    
+                                                    var yaw = Math.atan2(siny_cosp, cosy_cosp);
+                                                    
+                                                    document.getElementById("curr_yaw").innerText = yaw.toFixed(4);
+                                                });
+                                                
+                                                function pole1_1(event) {
+                                                    var msg = 'pole1_1';
+                                                    pole_publisher.publish({data: msg});
+                                                }
+                                                document.getElementById("pole1-1").addEventListener("click", pole1_1);
+                                                
+                                                function pole1_2(event) {
+                                                    var msg = 'pole1_2';
+                                                    pole_publisher.publish({data: msg});
+                                                }
+                                                document.getElementById("pole1-2").addEventListener("click", pole1_2);
+                                                
+                                                function pole1_3(event) {
+                                                    var msg = 'pole1_3';
+                                                    pole_publisher.publish({data: msg});
+                                                }
+                                                document.getElementById("pole1-3").addEventListener("click", pole1_3);
+                                                
+                                                function pole2_1(event) {
+                                                    var msg = 'pole2_1';
+                                                    pole_publisher.publish({data: msg});
+                                                }
+                                                document.getElementById("pole2-1").addEventListener("click", pole2_1);
+                                                
+                                                function pole2_2(event) {
+                                                    var msg = 'pole2_2';
+                                                    pole_publisher.publish({data: msg});
+                                                }
+                                                document.getElementById("pole2-2").addEventListener("click", pole2_2);
+                                                
+                                                function pole2_3(event) {
+                                                    var msg = 'pole2_3';
+                                                    pole_publisher.publish({data: msg});
+                                                }
+                                                document.getElementById("pole2-3").addEventListener("click", pole2_3);
+                                                
+                                                function pole2_4(event) {
+                                                    var msg = 'pole2_4';
+                                                    pole_publisher.publish({data: msg});
+                                                }
+                                                document.getElementById("pole2-4").addEventListener("click", pole2_4);
+                                                
+                                                function pole3(event) {
+                                                    var msg = 'pole3';
+                                                    pole_publisher.publish({data: msg});
+                                                }
+                                                document.getElementById("pole3").addEventListener("click", pole3);
+                                                
+                                            </script>
+                                        </body>
+                                        
+                                        </html>
+                                        
