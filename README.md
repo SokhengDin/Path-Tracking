@@ -24,6 +24,6 @@ $$e(t) = target - feedback$$
 
 # Nonlinear Model Predictive Control (NMPC)
 We use nonlinear optimization to solve the quadratic cost from sum of tracking error between trajectory tracking and input control.
-$$ J = \sum_{k=0}^{N} (x_{k}-x_{ref,k})^{T}Q(x_{k}-x_{ref,k}) + (u_{k}-u_{ref,k})^{T}R(u_{k}-u_{ref,k}) $$
+$ J = \sum_{k=0}^{N} (x_{k}-x_{ref,k})^{T}Q(x_{k}-x_{ref,k}) + (u_{k}-u_{ref,k})^{T}R(u_{k}-u_{ref,k}) $
 ## Experiment (Trajectory Tracking with NMPC)
 <img src="Figure/Figure_nmpc.png">
