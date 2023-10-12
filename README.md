@@ -40,7 +40,7 @@ which
 We use Continuation/Generalized Minimal Residual method for calculate optimal input
 
 ```math
-H(x,u,\lambda,\mu) = L(x,u) + phi(x_{N}) + \lambda^{T}f(x,u) + \mu^{T}C(x,u) + \nu^{T}h(x,u)
+H(x,u,\lambda,\mu) = L(x,u) + \phi(x_{N}) + \lambda^{T}f(x,u) + \mu^{T}C(x,u) + \nu^{T}h(x,u)
 ```
 ## Experiment without constraint optimization
 
