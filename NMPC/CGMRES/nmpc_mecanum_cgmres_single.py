@@ -32,7 +32,7 @@ class MecanumModel:
         return rot3dz
     
     def inverseJ_matrix(self):
-        J = np.array([
+        J = (self.r/4)*np.array([
             [1, 1, 1, 1],
             [-1, 1, 1, -1],
             [-1/(self.lx+self.ly), 1/(self.lx+self.ly), -1/(self.lx+self.ly), 1/(self.lx+self.ly)]
@@ -157,8 +157,8 @@ class NMPCCGMRESSolver:
         self.tf = 1.0
 
         ## Tuning Matrix
-        self.Q = [1, 1, 1]
-        self.R = [1, 1, 1, 1]
+        self.Q = [100, 100, 100]
+        self.R = [10, 10, 10, 10]
 
         ## Dummy Tuning Matrix
         self.R_dum = [1, 1, 1, 1]
@@ -223,7 +223,7 @@ class NMPCCGMRESSolver:
         
         return Lambda
 
-    def calc_f(self, X, U, Lamda, Mu, dt):
+    def calc_f(self, X, U, Lambda, Mu, dt):
         """
         Calculates the optimization function F for the CGMRES solver.
         
@@ -234,15 +234,15 @@ class NMPCCGMRESSolver:
         :param dt: Time step for discretization.
         :return: Optimization function F.
         """
-        X = self.calc_state(X, U, dt)
+        X_new = self.calc_state(X, U, dt)
 
-        Lambda = self.calc_costate(X, U, Lamda, dt)
+        Lambda_new = self.calc_costate(X_new, U, Lambda, dt)
 
         F = np.zeros((self.u_dim, self.pred_horizons))
 
         for i in range(self.pred_horizons):
             dhdu1, dhdu2, dhdu3, dhdu4 = self.hjb_equation.dhdu(
-                X[:, i], U[:, i], self.U_r, Lambda[:, i], Mu[:, i]
+                X[:, i], U[:, i], self.U_r, Lambda_new[:, i+1], Mu[:, i]
             )
 
             F[0, i] = dhdu1
@@ -255,7 +255,7 @@ class NMPCCGMRESSolver:
         return F
 
 
-    def solve_nmpc(self, X, U, Lamda, Mu, time):
+    def solve_nmpc(self, X, U, Lambda, Mu, time):
         """
         Solves the NMPC optimization problem at the current timestep.
         
@@ -268,36 +268,43 @@ class NMPCCGMRESSolver:
         """
         # Time step horizons
         dt = self.tf * (1-np.exp(-self.alpha*time)) / self.pred_horizons
-        # F(x,u, t+h)
+        # F(x,u,t+h)
         F = self.calc_f(X, U, Lambda, Mu, dt)
-        #F(x+hdx,u,t+h)
+
+        # F(x+hdx,u,t+h)
         x_dot, y_dot, yaw_dot = self.robot_model.forward_kinematic(X[2, 0], U[0, 0], U[1, 0], U[2, 0], U[3, 0])
-        X[:, 0] = X[:, 0] + np.array([x_dot, y_dot, yaw_dot]) * dt
+        X[:, 0] = X[:, 0] + np.array([x_dot, y_dot, yaw_dot]) * self.ht
         Fxt = self.calc_f(X, U, Lambda, Mu, dt)
-        # F(x+hdx,u+hdu,t+h)
-        Fuxt = self.calc_f(X, U + self.dU*self.ht, Lambda, Mu, dt)
+
+        # F(x+hdx,u+hdx,t+h)
+        Fuxt = self.calc_f(X, U + self.dU*self.ht, Lambda, Mu , dt)
 
         # Define right-left handside equation
         left = (Fuxt - Fxt) / self.ht
         right = -self.zeta * F - (Fxt - F)/self.ht
 
         # Define iterations
-        m = (self.u_dim)*self.pred_horizons
+        m = (self.u_dim ) * self.pred_horizons
         # Define r0
-        r0 = right - right
-
-        # GMRES with givens rotation
+        r0 = right - left
+        # print(r0)
+        
+        # GMRES
         Vm = np.zeros((m, m+1))
         Vm[:, 0:1] = r0 / np.linalg.norm(r0)
+        # print("Vm", Vm[:, 0])
         Hm = np.zeros((m+1, m))
+        # print(Vm[:, 0])
+
 
         for i in range(m):
             Fuxt = self.calc_f(
-                X, U + Vm[:, i:i+1].reshape(self.u_dim, self.pred_horizons, order='F')*self.ht,
-                Lambda, Mu, dt
+                X, U + Vm[:, i:i+1].reshape(self.u_dim, self.pred_horizons, order='F') * self.ht,
+                Lambda, Mu,
+                dt
             )
 
-            Av = (Fuxt - Fxt)/self.ht
+            Av = (Fuxt - Fxt) / self.ht
 
             for k in range(i+1):
                 Hm[k, i] = np.dot(Av.T, Vm[:, k:k+1])
@@ -306,16 +313,17 @@ class NMPCCGMRESSolver:
 
             for k in range(i+1):
                 temp_vec = temp_vec + np.dot(Hm[k, i], Vm[:, k:k+1])
-            
+
             v_hat = Av - temp_vec
 
             Hm[i+1, i] = np.linalg.norm(v_hat)
 
             Vm[:,i+1:i+2] = v_hat/Hm[i+1, i]
-        
+
         e = np.zeros((m+1, 1))
-        e[0, 0] = 1
-        gm = np.linalg.norm(r0)*e
+        e[0, 0] = 1.0
+        gm = np.linalg.norm(r0) * e
+        # print(gm)
 
         UTMat, gm = self.ToUTMat(Hm, gm, m)
 
@@ -359,8 +367,6 @@ class NMPCCGMRESSolver:
             gm = np.matmul(Omega, gm)
 
         return Hm, gm
-
-
 
 
 
@@ -435,3 +441,47 @@ if __name__ == "__main__":
 
         time += dt
         count_index += 1
+
+    if plot_animation:
+        fig, axes = plt.subplots(3, 3, layout="constrained", figsize=(12, 7))
+        axes[0, 0].plot(np.array(x_data), np.array(y_data))
+        axes[0, 0].set_xlabel('x [m]')
+        axes[0, 0].set_ylabel('y [m]')
+        axes[0, 0].set_title("Optimal Trajectory")
+        axes[0, 0].grid(True)
+        axes[0, 1].plot(np.arange(count_index), np.array(x_data))
+        axes[0, 1].set_xlabel('t [s]')
+        axes[0, 1].set_ylabel('x [m]')
+        axes[0, 1].set_title("Point x")
+        axes[0, 1].grid(True)
+        axes[0, 2].plot(np.arange(count_index), np.array(y_data))
+        axes[0, 2].set_xlabel('t [s]')
+        axes[0, 2].set_ylabel('y [m]')
+        axes[0, 2].set_title("Point y")
+        axes[0, 2].grid(True)
+        axes[1, 0].plot(np.arange(count_index), np.array(yaw_data))
+        axes[1, 0].set_xlabel('t [s]')
+        axes[1, 0].set_ylabel(r'$\phi$ [rad]')
+        axes[1, 0].set_title("Point yaw")
+        axes[1, 0].grid(True)
+        axes[1, 1].plot(np.arange(count_index), np.array(u1_data))
+        axes[1, 1].set_xlabel('t [s]')
+        axes[1, 1].set_ylabel('u1 [m/s]')
+        axes[1, 1].set_title("u1")
+        axes[1, 1].grid(True)
+        axes[1, 2].plot(np.arange(count_index), np.array(u2_data))
+        axes[1, 2].set_xlabel('t [s]')
+        axes[1, 2].set_ylabel('u2 [rad/s]')
+        axes[1, 2].set_title("u2")
+        axes[1, 2].grid(True)
+        axes[2, 0].plot(np.arange(count_index), np.array(u3_data))
+        axes[2, 0].set_xlabel('t [s]')
+        axes[2, 0].set_ylabel('u3 [rad/s]')
+        axes[2, 0].set_title("u3")
+        axes[2, 0].grid(True)
+        axes[2, 1].plot(np.arange(count_index), np.array(u4_data))
+        axes[2, 1].set_xlabel('t [s]')
+        axes[2, 1].set_ylabel('u4 [rad/s]')
+        axes[2, 1].set_title("u4")
+        axes[2, 1].grid(True)
+        plt.show()
