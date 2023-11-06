@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+from differentialSim import DiffSimulation
+
+
 class MecanumModel:
     """
     This class models the kinematics of a mecanum-wheeled robot.
@@ -158,7 +161,7 @@ class NMPCCGMRESSolver:
 
         ## Tuning Matrix
         self.Q = [100, 100, 100]
-        self.R = [10, 10, 10, 10]
+        self.R = [0.01, 0.01, 0.01, 0.01]
 
         ## Dummy Tuning Matrix
         self.R_dum = [1, 1, 1, 1]
@@ -396,6 +399,8 @@ if __name__ == "__main__":
     count_index = 0
     plot_animation = True
 
+    diff_model = DiffSimulation()
+
 
     X = np.zeros((x_dim, pred_horizons+1))
     X[:, 0] = np.array([x0, y0, yaw0])
@@ -443,6 +448,18 @@ if __name__ == "__main__":
         count_index += 1
 
     if plot_animation:
+        for i in range(count_index):
+            plt.clf()
+            plt.gcf().canvas.mpl_connect('key_release_event',
+                        lambda event: [exit(0) if event.key == 'escape' else None])
+            plt.plot(x_data[-1], y_data[-1], marker="x", color="blue", label="Goal Point")
+            plt.plot(np.array(x_data), np.array(y_data), color="red", label="Optimal Trajectory")
+            diff_model.generate_each_wheel_and_draw(x_data[i], y_data[i], yaw_data[i])
+            plt.axis("equal")
+            plt.legend()
+            plt.title("Linear velocity :" + str(round(u1_data[i], 2)) + " m/s")
+            plt.grid(True)
+            plt.pause(0.01)
         fig, axes = plt.subplots(3, 3, layout="constrained", figsize=(12, 7))
         axes[0, 0].plot(np.array(x_data), np.array(y_data))
         axes[0, 0].set_xlabel('x [m]')
